@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>SOS Accident Alert • Pro</title>
+<style>
+  :root{
+    --bg:#fff5f5; --card:#fff; --text:#2b2b2b; --muted:#b71c1c; --muted-2:#d32f2f;
+    --accent:#d32f2f; --accent-2:#ff5252; --shadow:0 12px 28px #b71c1c2a;
+  }
+  .dark{
+    --bg:#0f0f12; --card:#15161a; --text:#eaeaea; --muted:#ff7777; --muted-2:#ff9a9a;
+    --accent:#ff4d4d; --accent-2:#ff7676; --shadow:0 12px 28px #00000070;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,Arial,sans-serif;background:var(--bg);color:var(--text)}
+  .wrap{max-width:480px;margin:0 auto;min-height:100%;display:flex;flex-direction:column}
+  header{position:sticky;top:0;backdrop-filter:saturate(1.2) blur(6px);background:color-mix(in srgb, var(--bg) 88%, transparent);z-index:20}
+  .topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px}
+  .brand{display:flex;gap:10px;align-items:center;font-weight:800;letter-spacing:.2px}
+  .logo{width:28px;height:28px;border-radius:8px;background:radial-gradient(circle at 30% 30%,var(--accent-2),var(--accent));box-shadow:0 0 0 3px #ffffff22}
+  .actions{display:flex;gap:10px}
+  .btn{appearance:none;border:0;border-radius:14px;padding:10px 14px;font-weight:600;cursor:pointer}
+  .btn.secondary{background:#ffffff10;color:var(--text);border:1px solid #ffffff22}
+  .btn.primary{background:var(--accent);color:#fff;box-shadow:var(--shadow)}
+  .btn.ghost{background:transparent;color:var(--text)}
+  .card{background:var(--card);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+  main{flex:1;display:flex;flex-direction:column;gap:14px;padding:16px}
+  .footer{padding:18px 16px;text-align:center;font-size:.9rem;opacity:.8}
+  .grid{display:grid;gap:14px}
+  .grid.two{grid-template-columns:1fr 1fr}
+  .title{margin:0 0 8px 0;font-size:1.15rem;color:var(--muted)}
+  .muted{opacity:.8}
+  input,select{width:100%;padding:12px 14px;border-radius:12px;border:1px solid #ffffff2a;background:#ffffff0f;color:var(--text);outline:none}
+  label{display:block;margin:.35rem 0 .35rem .25rem;font-weight:600;opacity:.9}
+  .sos-big{display:grid;place-items:center;height:300px}
+  .sos-btn{
+    width:210px;height:210px;border-radius:50%;border:0;color:#fff;font-weight:900;
+    font-size:2.2rem;letter-spacing:1px;cursor:pointer;background:radial-gradient(circle at 30% 30%,var(--accent-2),var(--accent));
+    box-shadow:0 12px 40px #ff52524a, inset 0 -10px 20px #00000022, 0 0 0 12px #ff000022;
+    animation:pulse 1.6s infinite ease-in-out;
+  }
+  @keyframes pulse{0%{transform:scale(1);box-shadow:0 12px 40px #ff52524a, 0 0 0 12px #ff000022}
+                   50%{transform:scale(1.04);box-shadow:0 18px 48px #ff525267, 0 0 0 18px #ff000018}
+                   100%{transform:scale(1);box-shadow:0 12px 40px #ff52524a, 0 0 0 12px #ff000022}}
+  .row{display:flex;gap:10px;flex-wrap:wrap}
+  .chip{padding:8px 12px;border-radius:999px;background:#ffffff10;border:1px solid #ffffff22}
+  .list{display:flex;flex-direction:column;gap:10px}
+  .contact{display:flex;justify-content:space-between;align-items:center;padding:10px 12px;border-radius:12px;background:#ffffff07;border:1px solid #ffffff1a}
+  .link{color:var(--muted);font-weight:700;text-decoration:none}
+  .hidden{display:none !important}
+  /* Countdown overlay */
+  .overlay{position:fixed;inset:0;background:#000000aa;display:flex;align-items:center;justify-content:center;z-index:50}
+  .sheet{background:var(--card);padding:20px;border-radius:16px;max-width:420px;margin:16px;box-shadow:var(--shadow);text-align:center}
+  .count{font-size:3rem;font-weight:900;color:var(--muted);margin:6px 0 14px}
+  .warn{font-weight:700;color:var(--muted)}
+  .toggle{display:flex;align-items:center;gap:10px}
+  .switch{appearance:none;width:46px;height:28px;border-radius:999px;background:#ffffff22;position:relative;outline:none;cursor:pointer;border:1px solid #ffffff33}
+  .switch:checked{background:var(--accent)}
+  .switch:before{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;transition:transform .18s ease}
+  .switch:checked:before{transform:translateX(18px)}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+
+  <header>
+    <div class="topbar">
+      <div class="brand"><div class="logo"></div> <span>SOS Accident Alert</span></div>
+      <div class="actions">
+        <button class="btn secondary" id="darkToggle" title="Dark mode">🌓</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- HOME PAGE -->
+    <section id="screen-home" class="grid">
+      <div class="card">
+        <h3 class="title">Welcome</h3>
+        <p class="muted">Tez aur simple emergency alerts — location ke saath. Neeche se start karein.</p>
+        <div class="grid two" style="margin-top:10px">
+          <button class="btn primary" onclick="nav('sos')">Start SOS</button>
+          <button class="btn secondary" onclick="nav('profile')">Profile</button>
+        </div>
+        <div class="row" style="margin-top:12px">
+          <button class="btn ghost" onclick="openHospitals()">🏥 Nearest Hospital</button>
+          <button class="btn ghost" onclick="howItWorks()">ℹ️ How it works</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="title">Quick Settings</h3>
+        <div class="list">
+          <label class="toggle">
+            <input type="checkbox" id="autoSOS" class="switch" />
+            <span>Auto-SOS on strong shake (experimental)</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="torchOpt" class="switch" />
+            <span>Flashlight while SOS (device support required)</span>
+          </label>
+          <label class="toggle">
+            <input type="checkbox" id="whatsAppAlso" class="switch" />
+            <span>Send via WhatsApp (along with SMS)</span>
+          </label>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3 class="title">Status</h3>
+        <div id="statusBox" class="muted">Not registered. Go to Profile to add details.</div>
+      </div>
+    </section>
+
+    <!-- PROFILE PAGE -->
+    <section id="screen-profile" class="grid hidden">
+      <div class="card">
+        <h3 class="title">Profile</h3>
+        <div id="profileView" class="list"></div>
+        <div class="row" style="margin-top:10px">
+          <button class="btn secondary" onclick="editProfile()">Edit Info</button>
+          <button class="btn ghost" onclick="nav('home')">Back</button>
+        </div>
+      </div>
+
+      <div class="card hidden" id="profileEditCard">
+        <h3 class="title">Edit Details</h3>
+        <form id="regForm" class="list">
+          <div>
+            <label>Name</label>
+            <input id="name" required />
+          </div>
+          <div>
+            <label>Blood Group</label>
+            <input id="blood" required placeholder="e.g. O+" />
+          </div>
+          <div>
+            <label>Emergency Contacts (with country code)</label>
+            <input id="c1" placeholder="+91XXXXXXXXXX" required />
+            <input id="c2" placeholder="+91XXXXXXXXXX" />
+            <input id="c3" placeholder="+91XXXXXXXXXX" />
+          </div>
+          <div class="row">
+            <button class="btn primary" type="submit">Save</button>
+            <button class="btn ghost" type="button" onclick="cancelEdit()">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <!-- SOS PAGE -->
+    <section id="screen-sos" class="grid hidden">
+      <div class="card">
+        <h3 class="title">Emergency</h3>
+        <div class="sos-big">
+          <button class="sos-btn" id="sosBtn">SOS</button>
+        </div>
+        <div class="row" style="justify-content:center">
+          <button class="btn ghost" onclick="nav('home')">Back</button>
+          <button class="btn ghost" onclick="openHospitals()">🏥 Nearest Hospital</button>
+        </div>
+        <p class="muted" style="text-align:center;margin-top:8px">Press once. A 5-second countdown starts; you can cancel.</p>
+      </div>
+
+      <div class="card">
+        <h3 class="title">Auto-SOS (Shake)</h3>
+        <p class="muted">Enable from Home → Quick Settings. High acceleration will trigger SOS automatically. (May vary by device.)</p>
+        <div class="row">
+          <button class="btn secondary" onclick="requestMotionPerm()">Enable Motion Access (iOS)</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- COUNTDOWN OVERLAY -->
+    <div id="overlay" class="overlay hidden" role="dialog" aria-modal="true">
+      <div class="sheet">
+        <div class="warn">Sending SOS in</div>
+        <div class="count" id="count">5</div>
+        <div class="muted" id="whereMsg">Getting location…</div>
+        <div class="row" style="margin-top:12px;justify-content:center">
+          <button class="btn secondary" onclick="cancelSOS()">Cancel</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <div class="footer">Powered by <b>Yashraj Pawar</b> • © 2025</div>
+</div>
+
+<script>
+/* ========= State & Utilities ========= */
+const store = {
+  get key(){ return 'sos_user_v2' },
+  get settingsKey(){ return 'sos_settings_v2' },
+  saveUser(u){ localStorage.setItem(this.key, JSON.stringify(u)); },
+  getUser(){ try{ return JSON.parse(localStorage.getItem(this.key)); }catch{ return null } },
+  clearUser(){ localStorage.removeItem(this.key); },
+  saveSettings(s){ localStorage.setItem(this.settingsKey, JSON.stringify(s)); },
+  getSettings(){
+    try{ return JSON.parse(localStorage.getItem(this.settingsKey)) || {} }catch{ return {} }
+  }
+};
+
+const qs = sel => document.querySelector(sel);
+const show = el => el.classList.remove('hidden');
+const hide = el => el.classList.add('hidden');
+
+function nav(screen){
+  ['home','profile','sos'].forEach(id => hide(qs('#screen-'+id)));
+  show(qs('#screen-'+screen));
+  if(screen==='profile') renderProfile();
+  if(screen==='home') renderStatus();
+}
+
+/* ========= Dark Mode ========= */
+(function initTheme(){
+  const pref = localStorage.getItem('sos_theme') || 'light';
+  if (pref==='dark') document.documentElement.classList.add('dark');
+  qs('#darkToggle').onclick = () => {
+    document.documentElement.classList.toggle('dark');
+    localStorage.setItem('sos_theme', document.documentElement.classList.contains('dark')?'dark':'light');
+  };
+})();
+
+/* ========= Registration / Profile ========= */
+function renderProfile(){
+  const u = store.getUser();
+  const view = qs('#profileView');
+  const editCard = qs('#profileEditCard');
+  if(!u){
+    view.innerHTML = `<div class="muted">Not registered yet.</div>
+      <div class="row" style="margin-top:8px">
+        <button class="btn primary" onclick="editProfile()">Add Details</button>
+      </div>`;
+    hide(editCard);
+    return;
+  }
+  view.innerHTML = `
+    <div class="list">
+      <div><b>Name:</b> ${escapeHtml(u.name)}</div>
+      <div><b>Blood Group:</b> ${escapeHtml(u.blood)}</div>
+      <div><b>Contacts:</b></div>
+      ${u.contacts.map(c=>`<div class="contact"><span>${escapeHtml(c)}</span><a class="link" href="tel:${c}">Call</a></div>`).join('')}
+    </div>`;
+  hide(editCard);
+  // Prefill edit inputs for convenience
+  qs('#name').value = u.name || '';
+  qs('#blood').value = u.blood || '';
+  ['c1','c2','c3'].forEach((id,i)=>qs('#'+id).value = (u.contacts||[])[i]||'');
+}
+function editProfile(){
+  show(qs('#profileEditCard'));
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function cancelEdit(){
+  hide(qs('#profileEditCard'));
+}
+qs('#regForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const name = qs('#name').value.trim();
+  const blood = qs('#blood').value.trim();
+  const contacts = ['#c1','#c2','#c3'].map(s=>qs(s).value.trim()).filter(Boolean);
+  if(!name || !blood || contacts.length===0){
+    alert('Please fill Name, Blood Group and at least one contact.');
+    return;
+  }
+  store.saveUser({name, blood, contacts});
+  hide(qs('#profileEditCard'));
+  renderProfile();
+  renderStatus();
+  alert('Profile saved ✅');
+});
+function renderStatus(){
+  const u = store.getUser();
+  qs('#statusBox').textContent = u
+    ? `Ready. Registered: ${u.name} • Blood: ${u.blood} • ${u.contacts.length} contact(s).`
+    : 'Not registered. Go to Profile to add details.';
+}
+
+/* ========= Hospitals Shortcut ========= */
+function openHospitals(){
+  // Opens Google Maps with nearby hospitals
+  window.open('https://www.google.com/maps/search/hospital+near+me','_blank');
+}
+function howItWorks(){
+  alert('1) Add your details in Profile.\n2) Press SOS.\n3) After 5-sec countdown, your live location is shared via SMS (and WhatsApp if enabled). Then you can call your first contact. Optional: flashlight & siren.\n4) Enable Auto-SOS to trigger on strong shake (experimental).');
+}
+
+/* ========= SOS Flow ========= */
+const overlay = qs('#overlay');
+let countdownTimer = null, count = 5, pendingSOS = false;
+let torchStream = null, torchTrack = null, torchOn = false;
+let audioCtx = null, sirenOsc = null, sirenGain = null, sirenID = null;
+
+function startCountdown(){
+  const u = store.getUser();
+  if(!u){ alert('Please complete your Profile first.'); return; }
+  count = 5; pendingSOS = true;
+  qs('#count').textContent = count;
+  qs('#whereMsg').textContent = 'Getting location…';
+  show(overlay);
+  playSiren(); // start siren immediately
+  if (getSetting('torch')) startTorch();
+  countdownTimer = setInterval(()=>{
+    count--; qs('#count').textContent = count;
+    if(count<=0){ clearInterval(countdownTimer); sendSOS(); }
+  }, 1000);
+}
+function cancelSOS(){
+  pendingSOS = false;
+  clearInterval(countdownTimer);
+  stopSiren(); stopTorch();
+  hide(overlay);
+}
+async function sendSOS(){
+  const u = store.getUser();
+  if(!u) return cancelSOS();
+
+  // Get location
+  let lat=null, lng=null, map='Location unavailable';
+  try{
+    qs('#whereMsg').textContent = 'Locating…';
+    const pos = await new Promise((res,rej)=>{
+      navigator.geolocation?.getCurrentPosition(res, rej, {enableHighAccuracy:true, timeout:12000});
+    });
+    lat = pos.coords.latitude; lng = pos.coords.longitude;
+    map = `https://maps.google.com/?q=${lat},${lng}`;
+    qs('#whereMsg').textContent = `Location locked ✅`;
+  }catch(e){
+    qs('#whereMsg').textContent = 'Could not get location.';
+  }
+
+  const msg = `🚨 Emergency! ${u.name} may be in danger.\nLocation: ${map}`;
+
+  // Send SMS (and optionally WhatsApp). Some browsers block multiple tabs;
+  // we space them out slightly.
+  const alsoWA = getSetting('wa') === true;
+
+  for(let i=0;i<u.contacts.length;i++){
+    const phone = u.contacts[i];
+    setTimeout(()=>{
+      window.open(`sms:${encodeURIComponent(phone)}?body=${encodeURIComponent(msg)}`,'_blank');
+      if(alsoWA){
+        const waNum = phone.replace(/[^0-9]/g,''); // WhatsApp requires digits only
+        setTimeout(()=>{
+          window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(msg)}`,'_blank');
+        }, 400);
+      }
+    }, i*700);
+  }
+
+  // Prompt to call first contact
+  setTimeout(()=>{
+    stopSiren(); stopTorch();
+    if(u.contacts[0] && confirm(`Call your first contact now?\n${u.contacts[0]}`)){
+      window.open(`tel:${u.contacts[0]}`,'_self');
+    }
+    hide(overlay);
+  }, Math.max(1800, u.contacts.length*800));
+}
+
+qs('#sosBtn').addEventListener('click', startCountdown);
+
+/* ========= Siren via WebAudio ========= */
+function playSiren(){
+  try{
+    if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)();
+    sirenOsc = audioCtx.createOscillator();
+    sirenGain = audioCtx.createGain();
+    sirenOsc.type = 'sawtooth';
+    sirenOsc.connect(sirenGain); sirenGain.connect(audioCtx.destination);
+    sirenGain.gain.value = 0.001; // start low
+    sirenOsc.start();
+
+    let up = true;
+    sirenID = setInterval(()=>{
+      const now = audioCtx.currentTime;
+      const f1 = up ? 600 : 900;
+      const f2 = up ? 900 : 600;
+      sirenOsc.frequency.cancelScheduledValues(now);
+      sirenOsc.frequency.setValueAtTime(f1, now);
+      sirenOsc.frequency.exponentialRampToValueAtTime(f2, now+0.6);
+      sirenGain.gain.cancelScheduledValues(now);
+      sirenGain.gain.linearRampToValueAtTime(0.08, now+0.1);
+      sirenGain.gain.linearRampToValueAtTime(0.05, now+0.6);
+      up = !up;
+    }, 600);
+  }catch(e){ /* ignore */ }
+}
+function stopSiren(){
+  try{
+    if(sirenID) clearInterval(sirenID), sirenID=null;
+    if(sirenOsc){ sirenOsc.stop(0); sirenOsc.disconnect(); sirenOsc=null; }
+    if(sirenGain){ sirenGain.disconnect(); sirenGain=null; }
+  }catch(e){}
+}
+
+/* ========= Flashlight (Torch) Attempt =========
+   Works on some Android devices in Chrome when rear camera supports torch.
+*/
+async function startTorch(){
+  if(torchOn) return;
+  try{
+    torchStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+    const tracks = torchStream.getVideoTracks();
+    if(!tracks[0]) return;
+    torchTrack = tracks[0];
+    const caps = torchTrack.getCapabilities?.();
+    if(caps && 'torch' in caps){
+      await torchTrack.applyConstraints({ advanced:[{ torch:true }] });
+      torchOn = true;
+    }else{
+      // Fallback: blink screen background as visual alert
+      blinkScreen();
+    }
+  }catch(e){
+    blinkScreen();
+  }
+}
+function stopTorch(){
+  torchOn = false;
+  if(torchTrack){
+    try{ torchTrack.applyConstraints({ advanced:[{ torch:false }] }); }catch(e){}
+  }
+  if(torchStream){ torchStream.getTracks().forEach(t=>t.stop()); }
+  stopBlink();
+}
+
+/* Screen blink fallback */
+let blinkID=null, oldBg=null;
+function blinkScreen(){
+  if(blinkID) return;
+  let on=false;
+  oldBg = document.body.style.backgroundColor;
+  blinkID = setInterval(()=>{
+    on=!on;
+    document.body.style.backgroundColor = on ? '#ffadad' : '';
+  }, 220);
+}
+function stopBlink(){
+  if(blinkID){ clearInterval(blinkID); blinkID=null; document.body.style.backgroundColor = oldBg || ''; }
+}
+
+/* ========= Shake Detection (Auto-SOS) ========= */
+let lastShake = 0;
+window.addEventListener('devicemotion', (e)=>{
+  if(getSetting('auto')!==true) return;
+  const a = e.accelerationIncludingGravity || e.acceleration || {x:0,y:0,z:0};
+  const mag = Math.sqrt((a.x||0)**2+(a.y||0)**2+(a.z||0)**2);
+  // Threshold ~ 22 m/s² (≈ 2.2g). Tune as needed.
+  if(mag > 22){
+    const now = Date.now();
+    if(now - lastShake > 4000){ // debounce 4s
+      lastShake = now;
+      startCountdown();
+    }
+  }
+});
+
+/* iOS 13+ needs explicit permission for motion sensors */
+async function requestMotionPerm(){
+  try{
+    if(typeof DeviceMotionEvent !== 'undefined' &&
+       typeof DeviceMotionEvent.requestPermission === 'function'){
+      const st = await DeviceMotionEvent.requestPermission();
+      alert(st==='granted' ? 'Motion access granted ✅' : 'Motion access denied ❌');
+    }else{
+      alert('Your device does not require this step.');
+    }
+  }catch(e){ alert('Could not request motion access.'); }
+}
+
+/* ========= Settings (toggles) ========= */
+function getSettingKey(name){
+  return ({auto:'autoSOS', torch:'torch', wa:'whatsAppAlso'})[name];
+}
+function getSetting(name){
+  const s = store.getSettings();
+  return !!s[getSettingKey(name)];
+}
+function setSetting(name, val){
+  const s = store.getSettings();
+  s[getSettingKey(name)] = !!val;
+  store.saveSettings(s);
+}
+['autoSOS','torch','whatsAppAlso'].forEach(id=>{
+  const el = qs('#'+id);
+  el.checked = store.getSettings()[id] || false;
+  el.addEventListener('change', ()=> setSetting(id==='autoSOS'?'auto':id==='torch'?'torch':'wa', el.checked));
+});
+
+/* ========= Helpers ========= */
+function escapeHtml(s){ return (s||'').replace(/[&<>"']/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;' }[c])) }
+
+/* ========= Initial Nav ========= */
+(function init(){
+  renderStatus();
+  nav('home');
+})();
+</script>
+</body>
+</html>
