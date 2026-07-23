@@ -1,416 +1,1370 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>For Gunnu 💖</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chhipuu's Secret Adventure</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background: #0a0a0a;
+            font-family: 'Arial', sans-serif;
+        }
 
-  <style>
-    *{
-      margin:0;
-      padding:0;
-      box-sizing:border-box;
-      font-family:'Poppins',sans-serif;
-    }
+        canvas {
+            display: block;
+            width: 100%;
+            height: 100%;
+            background: #1a1a2e;
+        }
 
-    body{
-      background:linear-gradient(135deg,#050505,#111,#ff6fa9);
-      overflow-x:hidden;
-      color:white;
-    }
+        @font-face {
+            font-family: 'GameFont';
+            src: local('Arial');
+        }
 
-    .intro-screen{
-      width:100%;
-      height:100vh;
-      display:flex;
-      justify-content:center;
-      align-items:center;
-      position:fixed;
-      top:0;
-      left:0;
-      z-index:999;
-      background:linear-gradient(135deg,#000,#1a1a1a,#ff5e9c);
-      transition:1s;
-    }
-
-    .card-closed{
-      width:280px;
-      height:380px;
-      border-radius:25px;
-      background:rgba(255,255,255,0.08);
-      backdrop-filter:blur(14px);
-      border:2px solid rgba(255,255,255,0.15);
-      box-shadow:0 0 45px rgba(255,105,180,0.45);
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      cursor:pointer;
-      animation:float 3s ease-in-out infinite;
-      text-align:center;
-      padding:20px;
-    }
-
-    .card-closed h1{
-      font-size:32px;
-      color:#ffd4e7;
-      margin-bottom:15px;
-    }
-
-    .card-closed p{
-      color:#eee;
-      font-size:15px;
-      line-height:1.7;
-    }
-
-    .heart{
-      font-size:60px;
-      animation:heartbeat 1.5s infinite;
-      margin-bottom:15px;
-    }
-
-    .main-content{
-      display:none;
-      padding:25px 18px 80px;
-      animation:fadeIn 1.5s ease;
-    }
-
-    .hero{
-      min-height:100vh;
-      display:flex;
-      flex-direction:column;
-      justify-content:center;
-      align-items:center;
-      text-align:center;
-    }
-
-    .guide-character{
-      margin-bottom:35px;
-      display:flex;
-      align-items:center;
-      gap:15px;
-      background:rgba(255,255,255,0.08);
-      padding:15px 18px;
-      border-radius:25px;
-      backdrop-filter:blur(12px);
-      box-shadow:0 0 25px rgba(255,105,180,0.25);
-      animation:float 3s ease-in-out infinite;
-      cursor:pointer;
-    }
-
-    .doll{
-      font-size:55px;
-    }
-
-    .guide-text h3{
-      color:#ffd4e7;
-      margin-bottom:5px;
-      font-size:22px;
-    }
-
-    .guide-text p{
-      font-size:14px;
-      color:#fff;
-    }
-
-    .hero h1{
-      font-size:42px;
-      color:#ffd4ea;
-      margin-bottom:15px;
-      text-shadow:0 0 15px rgba(255,255,255,0.4);
-    }
-
-    .typing{
-      font-size:17px;
-      line-height:1.9;
-      max-width:340px;
-      color:#f8f8f8;
-      min-height:240px;
-    }
-
-    .memory-title{
-      text-align:center;
-      font-size:32px;
-      margin:40px 0 30px;
-      color:#ffd5e8;
-    }
-
-    .memory-card{
-      background:rgba(255,255,255,0.08);
-      border:1px solid rgba(255,255,255,0.15);
-      border-radius:28px;
-      overflow:hidden;
-      margin-bottom:30px;
-      backdrop-filter:blur(14px);
-      box-shadow:0 0 35px rgba(255,105,180,0.25);
-      animation:slideUp 1.2s ease;
-    }
-
-    .memory-card img,
-    .memory-card video{
-      width:100%;
-      display:block;
-    }
-
-    .memory-text{
-      padding:20px;
-      text-align:center;
-      line-height:1.8;
-      color:#fff;
-      font-size:15px;
-    }
-
-    .quote-section{
-      margin-top:40px;
-      text-align:center;
-    }
-
-    .quote{
-      margin:25px 0;
-      font-size:18px;
-      color:#ffe7f1;
-      line-height:1.8;
-      animation:fadeIn 2s ease;
-    }
-
-    .end-card{
-      margin-top:50px;
-      background:rgba(255,255,255,0.08);
-      border-radius:30px;
-      padding:35px 25px;
-      text-align:center;
-      box-shadow:0 0 35px rgba(255,105,180,0.3);
-    }
-
-    .end-card h2{
-      font-size:34px;
-      margin-bottom:18px;
-      color:#ffd5ea;
-    }
-
-    .end-card p{
-      line-height:1.9;
-      color:#fff;
-    }
-
-    .floating-heart{
-      position:fixed;
-      bottom:-20px;
-      color:pink;
-      animation:rise linear forwards;
-      opacity:0.7;
-      z-index:1;
-    }
-
-    @keyframes rise{
-      to{
-        transform:translateY(-120vh);
-        opacity:0;
-      }
-    }
-
-    @keyframes heartbeat{
-      0%,100%{transform:scale(1);}
-      50%{transform:scale(1.2);}
-    }
-
-    @keyframes float{
-      0%,100%{transform:translateY(0px);}
-      50%{transform:translateY(-12px);}
-    }
-
-    @keyframes fadeIn{
-      from{opacity:0;}
-      to{opacity:1;}
-    }
-
-    @keyframes slideUp{
-      from{
-        opacity:0;
-        transform:translateY(40px);
-      }
-      to{
-        opacity:1;
-        transform:translateY(0px);
-      }
-    }
-
-    audio{
-      display:none;
-    }
-  </style>
+        body {
+            -webkit-user-select: none;
+            user-select: none;
+            -webkit-touch-callout: none;
+            -webkit-user-drag: none;
+        }
+    </style>
 </head>
 <body>
+    <canvas id="gameCanvas"></canvas>
 
-  <!-- Opening Card -->
-  <div class="intro-screen" id="intro">
-    <div class="card-closed" onclick="openCard()">
-      <div class="heart">💖</div>
-      <h1>For Gunnu</h1>
-      <p>
-        Ek chhota sa digital card...
-        kisi bahut special dost ke liye ✨
-        <br><br>
-        Tap to Open 💌
-      </p>
-    </div>
-  </div>
+    <script>
+        // ==================== GAME CONFIGURATION ====================
+        const GAME_WIDTH = 1280;
+        const GAME_HEIGHT = 720;
+        const TILE_SIZE = 40;
+        const FPS = 60;
+        const FRAME_TIME = 1000 / FPS;
 
-  <!-- Music -->
-  <audio id="music" loop>
-    <source src="music.mp3" type="audio/mp3">
-  </audio>
+        // ==================== CANVAS & CONTEXT ====================
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d', { willReadFrequently: true });
+        canvas.width = GAME_WIDTH;
+        canvas.height = GAME_HEIGHT;
 
-  <!-- Main Content -->
-  <div class="main-content" id="main">
+        // ==================== GLOBAL STATE ====================
+        const gameState = {
+            currentScene: 'splash',
+            isRunning: true,
+            isPaused: false,
+            currentLevel: 0,
+            totalScore: 0,
+            totalCoins: 0,
+            totalStars: 0,
+            inventory: {},
+            achievements: [],
+            saveData: null,
+            timeElapsed: 0,
+            dayNightCycle: 0.5,
+            volumeLevel: 0.7,
+            isMuted: false
+        };
 
-    <section class="hero">
+        // ==================== ASSET GENERATORS ====================
+        const AssetGenerator = {
+            createGradient(x1, y1, x2, y2, stops) {
+                const grad = ctx.createLinearGradient(x1, y1, x2, y2);
+                stops.forEach(([offset, color]) => grad.addColorStop(offset, color));
+                return grad;
+            },
 
-      <div class="guide-character" onclick="scrollToMemories()">
-        <div class="doll">🧸</div>
-        <div class="guide-text">
-          <h3>Yashuu 💖</h3>
-          <p>Hath pakdo... aage chalte hai ✨</p>
-        </div>
-      </div>
-      <h1>Hey Gunnu 💕</h1>
+            createRadialGradient(x, y, r1, r2, stops) {
+                const grad = ctx.createRadialGradient(x, y, r1, x, y, r2);
+                stops.forEach(([offset, color]) => grad.addColorStop(offset, color));
+                return grad;
+            },
 
-      <div class="typing" id="typing"></div>
-    </section>
+            drawPlayer(x, y, state = {}) {
+                ctx.save();
+                ctx.translate(x, y);
 
-    <!-- Memories -->
-    <h2 class="memory-title" id="memories">Our Cute Memories ✨</h2>
+                // Head
+                const headGrad = this.createRadialGradient(0, 0, 5, 15, [
+                    [0, '#ffe4c4'],
+                    [1, '#ffd99b']
+                ]);
+                ctx.fillStyle = headGrad;
+                ctx.beginPath();
+                ctx.arc(0, -8, 12, 0, Math.PI * 2);
+                ctx.fill();
 
-    <div class="memory-card">
-      <img src="memory1.jpg" alt="memory">
+                // Eyes
+                ctx.fillStyle = '#000';
+                ctx.beginPath();
+                ctx.arc(-5, -10, 2.5, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(5, -10, 2.5, 0, Math.PI * 2);
+                ctx.fill();
 
-      <div class="memory-text">
-         ye moment mere liye bahut special tha 💖
-      </div>
-    </div>
+                // Smile
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 1.5;
+                ctx.beginPath();
+                ctx.arc(0, -6, 4, 0, Math.PI);
+                ctx.stroke();
 
-    <div class="memory-card">
-      <img src="memory2.jpg" alt="memory">
+                // Body
+                const bodyGrad = this.createLinearGradient(0, -2, 0, 12, [
+                    [0, '#ff69b4'],
+                    [1, '#ff1493']
+                ]);
+                ctx.fillStyle = bodyGrad;
+                ctx.fillRect(-10, -2, 20, 16);
 
-      <div class="memory-text">
-        Aapki hasi literally pura mood thik kar deti hai ✨
-      </div>
-    </div>
+                // Arms
+                ctx.fillStyle = '#ffe4c4';
+                ctx.fillRect(-16, 0, 6, 12);
+                ctx.fillRect(10, 0, 6, 12);
 
-    <div class="memory-card">
-      <video controls>
-        <source src="memoryvideo.mp4" type="video/mp4">
-      </video>
+                // Legs
+                ctx.fillStyle = '#4a90e2';
+                ctx.fillRect(-8, 14, 6, 12);
+                ctx.fillRect(2, 14, 6, 12);
 
-      <div class="memory-text">
-        Kuch moments sirf memories nahi hote...
-        comfort ban jaate hai 💕
-      </div>
-    </div>
+                ctx.restore();
+            },
 
-    <!-- Friendship Quotes -->
-    <section class="quote-section">
+            drawEnemy(x, y, type) {
+                ctx.save();
+                ctx.translate(x, y);
 
-      <div class="quote">
-        "Dosti perfect logo se nahi hoti...
-        perfect feelings se hoti hai 💖"
-      </div>
+                if (type === 'spike') {
+                    ctx.fillStyle = '#ff4444';
+                    ctx.beginPath();
+                    ctx.moveTo(0, -15);
+                    ctx.lineTo(12, 5);
+                    ctx.lineTo(-12, 5);
+                    ctx.closePath();
+                    ctx.fill();
+                } else if (type === 'bat') {
+                    ctx.fillStyle = '#333333';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 8, 0, Math.PI * 2);
+                    ctx.fill();
 
-      <div class="quote">
-        "Har friendship ki ek safe place hoti hai...
-        mere liye wo aap ho ✨"
-      </div>
+                    ctx.fillStyle = '#555555';
+                    ctx.beginPath();
+                    ctx.arc(-6, -4, 4, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(6, -4, 4, 0, Math.PI * 2);
+                    ctx.fill();
 
-      <div class="quote">
-        "Agar aap udaas ho...
-        to sach me kuch achha nahi lagta 🥺"
-      </div>
+                    ctx.fillStyle = '#ffffff';
+                    ctx.beginPath();
+                    ctx.arc(-6, -4, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.beginPath();
+                    ctx.arc(6, -4, 1.5, 0, Math.PI * 2);
+                    ctx.fill();
+                }
 
-    </section>
+                ctx.restore();
+            },
 
-    <!-- Ending -->
-    <div class="end-card">
-      <h2>Smile Please 😊</h2>
+            drawCoin(x, y) {
+                ctx.save();
+                ctx.translate(x, y);
+                const coinGrad = this.createRadialGradient(0, 0, 0, 8, [
+                    [0, '#ffff99'],
+                    [0.5, '#ffcc00'],
+                    [1, '#cc9900']
+                ]);
+                ctx.fillStyle = coinGrad;
+                ctx.beginPath();
+                ctx.arc(0, 0, 8, 0, Math.PI * 2);
+                ctx.fill();
 
-      <p>
-        Mujhe nahi pata mai perfect dost hu ya nahi...
-        par itna pata hai ki
-        aap mere liye genuinely important ho 💗
-        <br><br>
-        Naraj ho to mana lunga...
-        bas aap smile kar do Gunnu ✨
-      </p>
-    </div>
+                ctx.strokeStyle = '#ffaa00';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.arc(0, 0, 7, 0, Math.PI * 2);
+                ctx.stroke();
 
-  </div>
+                ctx.fillStyle = '#ffff99';
+                ctx.font = 'bold 10px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('C', 0, 1);
 
-  <script>
+                ctx.restore();
+            },
 
-    function openCard(){
-      document.getElementById('intro').style.opacity='0';
+            drawStar(x, y) {
+                ctx.save();
+                ctx.translate(x, y);
+                const starGrad = this.createRadialGradient(0, 0, 0, 10, [
+                    [0, '#ffff99'],
+                    [0.5, '#ffdd00'],
+                    [1, '#ffaa00']
+                ]);
+                ctx.fillStyle = starGrad;
+                const points = 5;
+                const outerRadius = 10;
+                const innerRadius = 4;
 
-      setTimeout(()=>{
-        document.getElementById('intro').style.display='none';
-        document.getElementById('main').style.display='block';
-      },1000);
+                ctx.beginPath();
+                for (let i = 0; i < points * 2; i++) {
+                    const radius = i % 2 === 0 ? outerRadius : innerRadius;
+                    const angle = (i * Math.PI) / points - Math.PI / 2;
+                    const px = Math.cos(angle) * radius;
+                    const py = Math.sin(angle) * radius;
+                    if (i === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.closePath();
+                ctx.fill();
 
-      document.getElementById('music').play();
-    }
+                ctx.strokeStyle = '#ffff66';
+                ctx.lineWidth = 1;
+                ctx.stroke();
 
-    const text = `
-Mujhe nahi pata aap mujhse naraj hai...
-ya bas thodi udaas hai...
+                ctx.restore();
+            },
 
-Par ek baat sach hai Gunnu 💖
+            drawDoor(x, y, isOpen = false) {
+                ctx.save();
+                ctx.translate(x, y);
 
-Aap meri life  me wo ho
-jinse baat karke dil halka lagta hai ✨
+                if (!isOpen) {
+                    const doorGrad = this.createLinearGradient(-15, 0, 15, 0, [
+                        [0, '#8b4513'],
+                        [0.5, '#a0522d'],
+                        [1, '#8b4513']
+                    ]);
+                    ctx.fillStyle = doorGrad;
+                    ctx.fillRect(-15, -25, 30, 50);
 
-Aur jab aap upset hoti ho na...to sachiii mai achha nahi lagta 🥺
+                    ctx.fillStyle = '#ffd700';
+                    ctx.beginPath();
+                    ctx.arc(12, 0, 3, 0, Math.PI * 2);
+                    ctx.fill();
+                } else {
+                    ctx.fillStyle = 'rgba(139, 69, 19, 0.3)';
+                    ctx.fillRect(-15, -25, 30, 50);
+                }
 
-Isliye ye chhota sa card banaya...
-just to remind you that
-aapki smile bahut precious hai 💕
-`;
+                ctx.restore();
+            },
 
-    let i = 0;
+            drawPlatform(x, y, width, height, style = 'normal') {
+                ctx.save();
 
-    function typeWriter(){
-      if(i < text.length){
-        document.getElementById('typing').innerHTML += text.charAt(i);
-        i++;
-        setTimeout(typeWriter,45);
-      }
-    }
+                if (style === 'ice') {
+                    const grad = this.createLinearGradient(x, y, x, y + height, [
+                        [0, '#b3e5fc'],
+                        [1, '#01579b']
+                    ]);
+                    ctx.fillStyle = grad;
+                } else if (style === 'lava') {
+                    const grad = this.createLinearGradient(x, y, x, y + height, [
+                        [0, '#ff6b1a'],
+                        [1, '#c41e3a']
+                    ]);
+                    ctx.fillStyle = grad;
+                } else {
+                    const grad = this.createLinearGradient(x, y, x, y + height, [
+                        [0, '#2ecc71'],
+                        [1, '#27ae60']
+                    ]);
+                    ctx.fillStyle = grad;
+                }
 
-    typeWriter();
+                ctx.fillRect(x, y, width, height);
+                ctx.strokeStyle = '#1e8449';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x, y, width, height);
 
-    // Floating hearts
-    function hearts(){
-      const heart=document.createElement('div');
-      heart.classList.add('floating-heart');
-      heart.innerHTML='❤';
-      heart.style.left=Math.random()*100+'vw';
-      heart.style.fontSize=Math.random()*20+15+'px';
-      heart.style.animationDuration=Math.random()*3+4+'s';
-      document.body.appendChild(heart);
+                ctx.restore();
+            },
 
-      setTimeout(()=>{
-        heart.remove();
-      },7000)
-    }
+            drawSpike(x, y, size = 20) {
+                ctx.save();
+                ctx.fillStyle = '#ff4444';
+                ctx.beginPath();
+                ctx.moveTo(x, y - size);
+                ctx.lineTo(x + size / 2, y + size / 2);
+                ctx.lineTo(x - size / 2, y + size / 2);
+                ctx.closePath();
+                ctx.fill();
+                ctx.restore();
+            }
+        };
 
-    setInterval(hearts,300);
+        // ==================== PARTICLE SYSTEM ====================
+        class Particle {
+            constructor(x, y, vx, vy, color, life) {
+                this.x = x;
+                this.y = y;
+                this.vx = vx;
+                this.vy = vy;
+                this.color = color;
+                this.life = life;
+                this.maxLife = life;
+                this.size = Math.random() * 3 + 2;
+            }
 
-    function scrollToMemories(){
-      document.getElementById('memories').scrollIntoView({
-        behavior:'smooth'
-      });
-    }
+            update(dt) {
+                this.x += this.vx * dt;
+                this.y += this.vy * dt;
+                this.vy += 100 * dt; // Gravity
+                this.life -= dt;
+                this.size *= 0.98;
+            }
 
-  </script>
+            draw() {
+                const alpha = this.life / this.maxLife;
+                ctx.save();
+                ctx.globalAlpha = alpha;
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.restore();
+            }
 
+            isAlive() {
+                return this.life > 0;
+            }
+        }
+
+        class ParticleEmitter {
+            constructor(x, y, count = 10, color = '#ffff00') {
+                this.particles = [];
+                for (let i = 0; i < count; i++) {
+                    const angle = (Math.random() * Math.PI * 2);
+                    const speed = Math.random() * 200 + 100;
+                    const vx = Math.cos(angle) * speed;
+                    const vy = Math.sin(angle) * speed;
+                    this.particles.push(new Particle(x, y, vx, vy, color, 1));
+                }
+            }
+
+            update(dt) {
+                this.particles = this.particles.filter(p => p.isAlive());
+                this.particles.forEach(p => p.update(dt));
+            }
+
+            draw() {
+                this.particles.forEach(p => p.draw());
+            }
+        }
+
+        // ==================== PLAYER CLASS ====================
+        class Player {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.width = 20;
+                this.height = 30;
+                this.vx = 0;
+                this.vy = 0;
+                this.isJumping = false;
+                this.jumpCount = 0;
+                this.isDashing = false;
+                this.dashCooldown = 0;
+                this.health = 3;
+                this.maxHealth = 3;
+                this.coins = 0;
+                this.stars = 0;
+                this.xp = 0;
+                this.level = 1;
+                this.canWallJump = false;
+                this.lastX = x;
+                this.lastY = y;
+                this.wasJumping = false;
+            }
+
+            update(dt, platforms, enemies) {
+                this.lastX = this.x;
+                this.lastY = this.y;
+
+                // Horizontal movement
+                let moveX = 0;
+                if (keys['ArrowLeft'] || keys['a'] || touchControls.left) moveX -= 200;
+                if (keys['ArrowRight'] || keys['d'] || touchControls.right) moveX += 200;
+
+                this.vx = moveX;
+                this.x += this.vx * dt;
+
+                // Gravity
+                this.vy += 500 * dt;
+                this.y += this.vy * dt;
+
+                // Platform collision
+                let isGrounded = false;
+                platforms.forEach(platform => {
+                    if (this.checkCollision(platform)) {
+                        if (this.lastY + this.height <= platform.y + 5) {
+                            this.y = platform.y - this.height;
+                            this.vy = 0;
+                            this.isJumping = false;
+                            this.jumpCount = 0;
+                            isGrounded = true;
+                        }
+                    }
+                });
+
+                // Jump
+                if ((keys[' '] || keys['w'] || keys['ArrowUp'] || touchControls.jump) && (isGrounded || this.jumpCount < 2)) {
+                    if (!this.wasJumping) {
+                        this.vy = -300;
+                        this.isJumping = true;
+                        this.jumpCount++;
+                        this.wasJumping = true;
+                        this.createJumpParticles();
+                    }
+                } else {
+                    this.wasJumping = false;
+                }
+
+                // Dash
+                if ((keys['Shift'] || keys['x']) && this.dashCooldown <= 0) {
+                    this.isDashing = true;
+                    this.dashCooldown = 0.5;
+                    const dashDirection = this.vx > 0 ? 1 : (this.vx < 0 ? -1 : 1);
+                    this.x += dashDirection * 100;
+                    this.createDashParticles();
+                }
+
+                this.dashCooldown -= dt;
+
+                // Enemy collision
+                enemies.forEach(enemy => {
+                    if (this.checkCollisionCircle(enemy)) {
+                        this.takeDamage(1);
+                    }
+                });
+
+                // Screen bounds
+                if (this.x < 0) this.x = 0;
+                if (this.x + this.width > GAME_WIDTH) this.x = GAME_WIDTH - this.width;
+                if (this.y > GAME_HEIGHT) this.health = 0;
+            }
+
+            checkCollision(platform) {
+                return (
+                    this.x + this.width > platform.x &&
+                    this.x < platform.x + platform.width &&
+                    this.y + this.height > platform.y &&
+                    this.y < platform.y + platform.height
+                );
+            }
+
+            checkCollisionCircle(enemy) {
+                const distance = Math.hypot(
+                    this.x + this.width / 2 - (enemy.x + 10),
+                    this.y + this.height / 2 - (enemy.y + 10)
+                );
+                return distance < 20;
+            }
+
+            takeDamage(amount) {
+                this.health -= amount;
+                this.createDamageParticles();
+            }
+
+            createJumpParticles() {
+                const emitter = new ParticleEmitter(
+                    this.x + this.width / 2,
+                    this.y + this.height,
+                    5,
+                    '#ff69b4'
+                );
+                particles.push(emitter);
+            }
+
+            createDashParticles() {
+                const emitter = new ParticleEmitter(
+                    this.x + this.width / 2,
+                    this.y + this.height / 2,
+                    15,
+                    '#ffaa00'
+                );
+                particles.push(emitter);
+            }
+
+            createDamageParticles() {
+                const emitter = new ParticleEmitter(
+                    this.x + this.width / 2,
+                    this.y + this.height / 2,
+                    20,
+                    '#ff0000'
+                );
+                particles.push(emitter);
+            }
+
+            draw() {
+                AssetGenerator.drawPlayer(this.x + this.width / 2, this.y + this.height / 2);
+            }
+        }
+
+        // ==================== GAME OBJECTS ====================
+        class Platform {
+            constructor(x, y, width, height, style = 'normal', isMoving = false, moveDistance = 0) {
+                this.x = x;
+                this.y = y;
+                this.width = width;
+                this.height = height;
+                this.style = style;
+                this.isMoving = isMoving;
+                this.moveDistance = moveDistance;
+                this.moveDirection = 1;
+                this.moveSpeed = 60;
+                this.startX = x;
+            }
+
+            update(dt) {
+                if (this.isMoving) {
+                    this.x += this.moveSpeed * this.moveDirection * dt;
+                    if (Math.abs(this.x - this.startX) > this.moveDistance) {
+                        this.moveDirection *= -1;
+                    }
+                }
+            }
+
+            draw() {
+                AssetGenerator.drawPlatform(this.x, this.y, this.width, this.height, this.style);
+            }
+        }
+
+        class Enemy {
+            constructor(x, y, type = 'bat', patrolDistance = 0) {
+                this.x = x;
+                this.y = y;
+                this.type = type;
+                this.width = 16;
+                this.height = 16;
+                this.patrolDistance = patrolDistance;
+                this.moveDirection = 1;
+                this.moveSpeed = 80;
+                this.startX = x;
+            }
+
+            update(dt) {
+                if (this.patrolDistance > 0) {
+                    this.x += this.moveSpeed * this.moveDirection * dt;
+                    if (Math.abs(this.x - this.startX) > this.patrolDistance) {
+                        this.moveDirection *= -1;
+                    }
+                }
+            }
+
+            draw() {
+                AssetGenerator.drawEnemy(this.x, this.y, this.type);
+            }
+        }
+
+        class Collectible {
+            constructor(x, y, type = 'coin') {
+                this.x = x;
+                this.y = y;
+                this.type = type;
+                this.width = 16;
+                this.height = 16;
+                this.collected = false;
+                this.floatOffset = 0;
+                this.floatSpeed = 2;
+            }
+
+            update(dt) {
+                this.floatOffset += this.floatSpeed * dt;
+                if (this.floatOffset > 2 * Math.PI) {
+                    this.floatOffset = 0;
+                }
+            }
+
+            draw() {
+                const yOffset = Math.sin(this.floatOffset) * 5;
+                if (this.type === 'coin') {
+                    AssetGenerator.drawCoin(this.x, this.y + yOffset);
+                } else if (this.type === 'star') {
+                    AssetGenerator.drawStar(this.x, this.y + yOffset);
+                }
+            }
+
+            checkCollision(player) {
+                return (
+                    player.x + player.width > this.x &&
+                    player.x < this.x + this.width &&
+                    player.y + player.height > this.y &&
+                    player.y < this.y + this.height
+                );
+            }
+        }
+
+        // ==================== LEVEL SYSTEM ====================
+        const levels = [
+            {
+                name: "Forest Entrance",
+                platforms: [
+                    new Platform(0, 650, 1280, 70, 'normal'),
+                    new Platform(200, 550, 150, 20),
+                    new Platform(450, 480, 150, 20),
+                    new Platform(700, 420, 150, 20),
+                    new Platform(950, 500, 150, 20),
+                ],
+                enemies: [
+                    new Enemy(500, 400, 'bat', 100),
+                    new Enemy(800, 350, 'bat', 100),
+                ],
+                collectibles: [
+                    new Collectible(250, 520, 'coin'),
+                    new Collectible(500, 450, 'coin'),
+                    new Collectible(750, 390, 'star'),
+                    new Collectible(1000, 470, 'coin'),
+                ],
+                checkpointX: 100,
+                checkpointY: 600
+            },
+            {
+                name: "Sky Bridge",
+                platforms: [
+                    new Platform(0, 650, 1280, 70, 'normal'),
+                    new Platform(150, 500, 100, 20, 'normal', true, 150),
+                    new Platform(350, 400, 100, 20, 'normal', true, 150),
+                    new Platform(550, 300, 100, 20),
+                    new Platform(750, 400, 100, 20),
+                    new Platform(950, 500, 100, 20),
+                ],
+                enemies: [
+                    new Enemy(400, 300, 'bat', 150),
+                    new Enemy(700, 250, 'bat', 150),
+                ],
+                collectibles: [
+                    new Collectible(200, 470, 'coin'),
+                    new Collectible(400, 370, 'star'),
+                    new Collectible(600, 270, 'coin'),
+                    new Collectible(800, 370, 'coin'),
+                    new Collectible(1000, 470, 'coin'),
+                ],
+                checkpointX: 100,
+                checkpointY: 600
+            },
+            {
+                name: "Crystal Cave",
+                platforms: [
+                    new Platform(0, 650, 1280, 70, 'normal'),
+                    new Platform(150, 550, 200, 20),
+                    new Platform(400, 480, 200, 20),
+                    new Platform(650, 400, 200, 20),
+                    new Platform(900, 480, 200, 20),
+                ],
+                enemies: [
+                    new Enemy(300, 450, 'bat', 100),
+                    new Enemy(550, 350, 'bat', 100),
+                    new Enemy(1000, 400, 'bat', 100),
+                ],
+                collectibles: [
+                    new Collectible(250, 520, 'coin'),
+                    new Collectible(500, 450, 'star'),
+                    new Collectible(750, 370, 'coin'),
+                    new Collectible(950, 450, 'coin'),
+                    new Collectible(1050, 450, 'star'),
+                ],
+                checkpointX: 100,
+                checkpointY: 600
+            },
+            {
+                name: "Snow Peak",
+                platforms: [
+                    new Platform(0, 650, 1280, 70, 'ice'),
+                    new Platform(150, 550, 150, 20, 'ice'),
+                    new Platform(400, 480, 150, 20, 'ice'),
+                    new Platform(650, 400, 150, 20, 'ice'),
+                    new Platform(900, 480, 150, 20, 'ice'),
+                ],
+                enemies: [
+                    new Enemy(300, 450, 'bat', 100),
+                    new Enemy(700, 330, 'bat', 100),
+                ],
+                collectibles: [
+                    new Collectible(200, 520, 'coin'),
+                    new Collectible(450, 450, 'coin'),
+                    new Collectible(700, 370, 'star'),
+                    new Collectible(950, 450, 'coin'),
+                ],
+                checkpointX: 100,
+                checkpointY: 600
+            },
+            {
+                name: "Lava Temple",
+                platforms: [
+                    new Platform(0, 650, 1280, 70, 'normal'),
+                    new Platform(150, 550, 120, 20, 'lava'),
+                    new Platform(350, 480, 120, 20, 'normal'),
+                    new Platform(550, 400, 120, 20, 'lava'),
+                    new Platform(750, 480, 120, 20, 'normal'),
+                    new Platform(950, 550, 120, 20, 'lava'),
+                ],
+                enemies: [
+                    new Enemy(400, 400, 'bat', 100),
+                    new Enemy(700, 350, 'bat', 100),
+                    new Enemy(1000, 450, 'bat', 100),
+                ],
+                collectibles: [
+                    new Collectible(200, 520, 'coin'),
+                    new Collectible(400, 450, 'star'),
+                    new Collectible(600, 370, 'coin'),
+                    new Collectible(800, 450, 'coin'),
+                    new Collectible(1000, 520, 'star'),
+                ],
+                checkpointX: 100,
+                checkpointY: 600
+            },
+            {
+                name: "Rainbow Castle",
+                platforms: [
+                    new Platform(0, 650, 1280, 70, 'normal'),
+                    new Platform(100, 550, 150, 20),
+                    new Platform(300, 470, 150, 20),
+                    new Platform(500, 380, 150, 20),
+                    new Platform(700, 470, 150, 20),
+                    new Platform(900, 550, 150, 20),
+                ],
+                enemies: [
+                    new Enemy(250, 480, 'bat', 80),
+                    new Enemy(550, 330, 'bat', 80),
+                    new Enemy(850, 480, 'bat', 80),
+                ],
+                collectibles: [
+                    new Collectible(150, 520, 'coin'),
+                    new Collectible(350, 440, 'coin'),
+                    new Collectible(550, 350, 'star'),
+                    new Collectible(750, 440, 'coin'),
+                    new Collectible(950, 520, 'star'),
+                ],
+                checkpointX: 100,
+                checkpointY: 600
+            },
+            {
+                name: "Starlight Garden",
+                platforms: [
+                    new Platform(0, 650, 1280, 70, 'normal'),
+                    new Platform(120, 550, 130, 20),
+                    new Platform(320, 470, 130, 20),
+                    new Platform(520, 380, 130, 20),
+                    new Platform(720, 470, 130, 20),
+                    new Platform(920, 550, 130, 20),
+                ],
+                enemies: [
+                    new Enemy(280, 450, 'bat', 100),
+                    new Enemy(620, 330, 'bat', 100),
+                    new Enemy(960, 450, 'bat', 100),
+                ],
+                collectibles: [
+                    new Collectible(170, 520, 'coin'),
+                    new Collectible(370, 440, 'star'),
+                    new Collectible(570, 350, 'coin'),
+                    new Collectible(770, 440, 'star'),
+                    new Collectible(970, 520, 'coin'),
+                ],
+                checkpointX: 100,
+                checkpointY: 600
+            },
+            {
+                name: "Mystic Forest",
+                platforms: [
+                    new Platform(0, 650, 1280, 70, 'normal'),
+                    new Platform(140, 550, 110, 20),
+                    new Platform(340, 470, 110, 20),
+                    new Platform(540, 380, 110, 20),
+                    new Platform(740, 470, 110, 20),
+                    new Platform(940, 550, 110, 20),
+                ],
+                enemies: [
+                    new Enemy(300, 440, 'bat', 120),
+                    new Enemy(600, 320, 'bat', 120),
+                    new Enemy(900, 440, 'bat', 120),
+                ],
+                collectibles: [
+                    new Collectible(190, 520, 'star'),
+                    new Collectible(390, 440, 'coin'),
+                    new Collectible(590, 350, 'star'),
+                    new Collectible(790, 440, 'coin'),
+                    new Collectible(990, 520, 'star'),
+                ],
+                checkpointX: 100,
+                checkpointY: 600
+            },
+            {
+                name: "Dream Realm",
+                platforms: [
+                    new Platform(0, 650, 1280, 70, 'normal'),
+                    new Platform(160, 550, 100, 20),
+                    new Platform(360, 470, 100, 20, 'normal', true, 200),
+                    new Platform(560, 380, 100, 20),
+                    new Platform(760, 470, 100, 20, 'normal', true, 200),
+                    new Platform(960, 550, 100, 20),
+                ],
+                enemies: [
+                    new Enemy(320, 450, 'bat', 150),
+                    new Enemy(640, 320, 'bat', 150),
+                    new Enemy(960, 450, 'bat', 150),
+                ],
+                collectibles: [
+                    new Collectible(210, 520, 'coin'),
+                    new Collectible(410, 440, 'star'),
+                    new Collectible(610, 350, 'coin'),
+                    new Collectible(810, 440, 'star'),
+                    new Collectible(1010, 520, 'coin'),
+                ],
+                checkpointX: 100,
+                checkpointY: 600
+            },
+            {
+                name: "Final Sanctuary",
+                platforms: [
+                    new Platform(0, 650, 1280, 70, 'normal'),
+                    new Platform(150, 550, 150, 20),
+                    new Platform(400, 450, 200, 20),
+                    new Platform(700, 350, 200, 20),
+                    new Platform(1000, 450, 150, 20),
+                ],
+                enemies: [
+                    new Enemy(500, 400, 'bat', 150),
+                    new Enemy(800, 300, 'bat', 150),
+                ],
+                collectibles: [
+                    new Collectible(225, 520, 'star'),
+                    new Collectible(500, 420, 'star'),
+                    new Collectible(800, 320, 'star'),
+                    new Collectible(1075, 420, 'star'),
+                ],
+                checkpointX: 100,
+                checkpointY: 600,
+                isFinalLevel: true
+            }
+        ];
+
+        // ==================== GLOBAL VARIABLES ====================
+        let player = null;
+        let currentLevel = null;
+        let particles = [];
+        let keys = {};
+        let touchControls = { left: false, right: false, jump: false };
+        let lastFrameTime = Date.now();
+        let screenShake = 0;
+
+        // ==================== INPUT HANDLING ====================
+        document.addEventListener('keydown', (e) => {
+            keys[e.key] = true;
+            if (e.key === 'p' || e.key === 'P') {
+                gameState.isPaused = !gameState.isPaused;
+            }
+            if (e.key === 'f' || e.key === 'F') {
+                if (!document.fullscreenElement) {
+                    document.documentElement.requestFullscreen();
+                } else {
+                    document.exitFullscreen();
+                }
+            }
+        });
+
+        document.addEventListener('keyup', (e) => {
+            keys[e.key] = false;
+        });
+
+        // Touch controls
+        canvas.addEventListener('touchstart', (e) => {
+            const touch = e.touches[0];
+            const touchX = touch.clientX / canvas.clientWidth * GAME_WIDTH;
+            const touchY = touch.clientY / canvas.clientHeight * GAME_HEIGHT;
+
+            if (touchX < GAME_WIDTH / 3) {
+                touchControls.left = true;
+            } else if (touchX > (2 * GAME_WIDTH) / 3) {
+                touchControls.right = true;
+            }
+
+            if (touchY > GAME_HEIGHT / 2) {
+                touchControls.jump = true;
+            }
+        });
+
+        canvas.addEventListener('touchend', () => {
+            touchControls.left = false;
+            touchControls.right = false;
+            touchControls.jump = false;
+        });
+
+        // ==================== SCENE MANAGERS ====================
+        function drawBackground() {
+            // Sky gradient based on day/night cycle
+            const dayProgress = (Math.sin(gameState.dayNightCycle) + 1) / 2;
+
+            const skyColor1 = dayProgress > 0.5
+                ? `rgb(${Math.floor(135 + dayProgress * 120)}, ${Math.floor(206 + dayProgress * 49)}, 235)`
+                : `rgb(${Math.floor(25 + dayProgress * 110)}, ${Math.floor(25 + dayProgress * 85)}, ${Math.floor(50 + dayProgress * 185)})`;
+
+            const grad = ctx.createLinearGradient(0, 0, 0, GAME_HEIGHT);
+            grad.addColorStop(0, skyColor1);
+            grad.addColorStop(1, dayProgress > 0.5 ? '#e0f6ff' : '#001a4d');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+            // Stars during night
+            if (dayProgress < 0.5) {
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                for (let i = 0; i < 50; i++) {
+                    const x = (i * 73) % GAME_WIDTH;
+                    const y = (i * 47) % (GAME_HEIGHT / 2);
+                    ctx.fillRect(x, y, 2, 2);
+                }
+            }
+
+            // Clouds
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
+            const cloudOffset = (gameState.timeElapsed * 20) % GAME_WIDTH;
+            for (let i = 0; i < 5; i++) {
+                const x = (i * 300 + cloudOffset) % (GAME_WIDTH + 200) - 100;
+                const y = 100 + Math.sin(i) * 30;
+                drawCloud(x, y, 60);
+            }
+
+            gameState.dayNightCycle += 0.0001;
+            if (gameState.dayNightCycle > Math.PI * 2) {
+                gameState.dayNightCycle = 0;
+            }
+        }
+
+        function drawCloud(x, y, size) {
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+            ctx.beginPath();
+            ctx.arc(x, y, size * 0.4, 0, Math.PI * 2);
+            ctx.arc(x + size * 0.3, y, size * 0.5, 0, Math.PI * 2);
+            ctx.arc(x + size * 0.6, y, size * 0.4, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function drawUI() {
+            ctx.save();
+
+            // Health bar
+            ctx.fillStyle = '#333';
+            ctx.fillRect(10, 10, 150, 20);
+            const healthPercent = player.health / player.maxHealth;
+            ctx.fillStyle = healthPercent > 0.5 ? '#00ff00' : '#ff0000';
+            ctx.fillRect(10, 10, 150 * healthPercent, 20);
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.strokeRect(10, 10, 150, 20);
+
+            // Coin counter
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 16px Arial';
+            ctx.fillText(`Coins: ${player.coins}`, 10, 50);
+            ctx.fillText(`Stars: ${player.stars}`, 10, 75);
+            ctx.fillText(`Level: ${gameState.currentLevel + 1}`, 10, 100);
+
+            // Level name
+            ctx.font = 'bold 20px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(levels[gameState.currentLevel].name, GAME_WIDTH / 2, 30);
+
+            ctx.restore();
+        }
+
+        function drawPauseMenu() {
+            ctx.save();
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.7)';
+            ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('PAUSED', GAME_WIDTH / 2, GAME_HEIGHT / 2 - 50);
+
+            ctx.font = 'bold 24px Arial';
+            ctx.fillText('Press P to Resume', GAME_WIDTH / 2, GAME_HEIGHT / 2 + 50);
+            ctx.fillText('F for Fullscreen', GAME_WIDTH / 2, GAME_HEIGHT / 2 + 100);
+
+            ctx.restore();
+        }
+
+        function drawGameOverScreen() {
+            ctx.save();
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.8)';
+            ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+            ctx.fillStyle = '#ff0000';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('GAME OVER', GAME_WIDTH / 2, GAME_HEIGHT / 2 - 50);
+
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 24px Arial';
+            ctx.fillText(`Final Coins: ${player.coins}`, GAME_WIDTH / 2, GAME_HEIGHT / 2 + 50);
+            ctx.fillText('Press R to Restart', GAME_WIDTH / 2, GAME_HEIGHT / 2 + 100);
+
+            ctx.restore();
+
+            if (keys['r'] || keys['R']) {
+                keys['r'] = false;
+                keys['R'] = false;
+                initLevel(gameState.currentLevel);
+                gameState.currentScene = 'game';
+            }
+        }
+
+        function drawVictoryScreen() {
+            ctx.save();
+            const alpha = Math.min(1, gameState.victoryTimer / 1);
+            ctx.globalAlpha = alpha;
+
+            // Fireworks
+            for (let i = 0; i < 50; i++) {
+                const angle = (i / 50) * Math.PI * 2;
+                const distance = 200 * Math.sin(gameState.victoryTimer * 5);
+                const x = GAME_WIDTH / 2 + Math.cos(angle) * distance;
+                const y = GAME_HEIGHT / 2 + Math.sin(angle) * distance;
+                ctx.fillStyle = `hsl(${(i * 7) % 360}, 100%, 50%)`;
+                ctx.fillRect(x, y, 4, 4);
+            }
+
+            ctx.globalAlpha = 1;
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.6)';
+            ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+            ctx.fillStyle = '#ffff00';
+            ctx.font = 'bold 48px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('LEVEL COMPLETE!', GAME_WIDTH / 2, GAME_HEIGHT / 2 - 50);
+
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 24px Arial';
+            ctx.fillText(`Stars Collected: ${player.stars}`, GAME_WIDTH / 2, GAME_HEIGHT / 2 + 50);
+            ctx.fillText(`Total Coins: ${player.coins}`, GAME_WIDTH / 2, GAME_HEIGHT / 2 + 100);
+
+            if (gameState.currentLevel < levels.length - 1) {
+                ctx.fillText('Press SPACE for Next Level', GAME_WIDTH / 2, GAME_HEIGHT / 2 + 150);
+            } else {
+                ctx.fillText('Press SPACE for Final Ending', GAME_WIDTH / 2, GAME_HEIGHT / 2 + 150);
+            }
+
+            ctx.restore();
+
+            if (keys[' ']) {
+                keys[' '] = false;
+                if (gameState.currentLevel < levels.length - 1) {
+                    gameState.currentLevel++;
+                    initLevel(gameState.currentLevel);
+                    gameState.currentScene = 'game';
+                } else {
+                    gameState.currentScene = 'ending';
+                    gameState.victoryTimer = 0;
+                }
+            }
+        }
+
+        function drawEndingScene() {
+            ctx.save();
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
+            ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+            // Glowing book effect
+            const bookGlow = Math.sin(gameState.timeElapsed * 3) * 50 + 100;
+            ctx.shadowColor = 'rgba(255, 215, 0, 0.8)';
+            ctx.shadowBlur = bookGlow;
+
+            ctx.fillStyle = '#2c1810';
+            ctx.fillRect(GAME_WIDTH / 2 - 200, GAME_HEIGHT / 2 - 250, 400, 500);
+
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 32px Arial';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = 'rgba(255, 215, 0, 0.5)';
+            ctx.shadowBlur = 10;
+
+            const messages = [
+                "Every star collected...",
+                "Every step taken...",
+                "Every puzzle solved...",
+                "was part of a little adventure",
+                "created for someone truly special.",
+                "",
+                "If you are reading this...",
+                "Thank you for being yourself.",
+                "",
+                "— From a friend who wanted",
+                "to make you smile."
+            ];
+
+            let yOffset = GAME_HEIGHT / 2 - 200;
+            messages.forEach((msg, idx) => {
+                if (idx < Math.floor(gameState.victoryTimer * 2)) {
+                    ctx.fillText(msg, GAME_WIDTH / 2, yOffset);
+                    yOffset += 40;
+                }
+            });
+
+            if (gameState.victoryTimer > 6) {
+                // Draw the names with glowing particles
+                ctx.font = 'bold 48px Arial';
+                ctx.fillStyle = '#ff69b4';
+                ctx.shadowColor = 'rgba(255, 105, 180, 0.8)';
+                ctx.shadowBlur = 20;
+                ctx.fillText('🌸 Chhipuu 🌸', GAME_WIDTH / 2, GAME_HEIGHT - 150);
+
+                ctx.fillStyle = '#ffaa00';
+                ctx.shadowColor = 'rgba(255, 170, 0, 0.8)';
+                ctx.fillText('✨ Pagliiii ✨', GAME_WIDTH / 2, GAME_HEIGHT - 80);
+
+                // Particles around names
+                for (let i = 0; i < particles.length; i++) {
+                    particles[i].draw();
+                }
+            }
+
+            ctx.restore();
+
+            if (keys[' ']) {
+                keys[' '] = false;
+                gameState.currentScene = 'mainMenu';
+            }
+        }
+
+        function drawSplashScreen() {
+            ctx.save();
+            const progress = Math.min(gameState.timeElapsed * 2, 1);
+            const grad = ctx.createLinearGradient(0, 0, GAME_WIDTH, GAME_HEIGHT);
+            grad.addColorStop(0, `rgba(255, 105, 180, ${progress})`);
+            grad.addColorStop(1, `rgba(100, 200, 255, ${progress})`);
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+            ctx.fillStyle = `rgba(255, 255, 255, ${progress})`;
+            ctx.font = `bold ${60 + progress * 40}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText("Chhipuu's Secret Adventure", GAME_WIDTH / 2, GAME_HEIGHT / 2 - 50);
+
+            ctx.font = `bold ${24 + progress * 20}px Arial`;
+            ctx.fillText('A magical journey awaits...', GAME_WIDTH / 2, GAME_HEIGHT / 2 + 50);
+
+            if (gameState.timeElapsed > 3) {
+                gameState.currentScene = 'mainMenu';
+                gameState.timeElapsed = 0;
+            }
+
+            ctx.restore();
+        }
+
+        function drawMainMenu() {
+            drawBackground();
+
+            ctx.save();
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.4)';
+            ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+            ctx.fillStyle = '#ffff00';
+            ctx.font = 'bold 64px Arial';
+            ctx.textAlign = 'center';
+            ctx.shadowColor = '#ff69b4';
+            ctx.shadowBlur = 20;
+            ctx.fillText("Chhipuu's Secret Adventure", GAME_WIDTH / 2, 100);
+
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 28px Arial';
+            ctx.shadowColor = 'rgba(255, 105, 180, 0.5)';
+            ctx.shadowBlur = 10;
+
+            const buttons = [
+                { text: 'NEW GAME', y: 250 },
+                { text: 'CONTINUE', y: 330 },
+                { text: 'SETTINGS', y: 410 },
+                { text: 'CREDITS', y: 490 }
+            ];
+
+            buttons.forEach((btn, idx) => {
+                const isHovered = false;
+                ctx.fillStyle = isHovered ? '#ffaa00' : '#fff';
+                const boxWidth = 300;
+                const boxHeight = 50;
+                const x = GAME_WIDTH / 2 - boxWidth / 2;
+
+                ctx.fillRect(x, btn.y - 25, boxWidth, boxHeight);
+                ctx.fillStyle = '#000';
+                ctx.fillText(btn.text, GAME_WIDTH / 2, btn.y);
+            });
+
+            ctx.restore();
+
+            // Simple menu navigation
+            if (keys['1']) {
+                keys['1'] = false;
+                gameState.currentLevel = 0;
+                initLevel(0);
+                gameState.currentScene = 'game';
+            }
+        }
+
+        // ==================== LEVEL INITIALIZATION ====================
+        function initLevel(levelIndex) {
+            const levelData = levels[levelIndex];
+            player = new Player(levelData.checkpointX, levelData.checkpointY);
+            currentLevel = {
+                platforms: levelData.platforms.map(p => new Platform(p.x, p.y, p.width, p.height, p.style, p.isMoving, p.moveDistance)),
+                enemies: levelData.enemies.map(e => new Enemy(e.x, e.y, e.type, e.patrolDistance)),
+                collectibles: levelData.collectibles.map(c => new Collectible(c.x, c.y, c.type))
+            };
+            particles = [];
+            gameState.isPaused = false;
+        }
+
+        // ==================== MAIN GAME LOOP ====================
+        function update(deltaTime) {
+            if (gameState.isPaused) return;
+
+            gameState.timeElapsed += deltaTime;
+
+            if (gameState.currentScene === 'game') {
+                // Player update
+                player.update(deltaTime, currentLevel.platforms, currentLevel.enemies);
+
+                // Platform updates
+                currentLevel.platforms.forEach(p => p.update(deltaTime));
+
+                // Enemy updates
+                currentLevel.enemies.forEach(e => e.update(deltaTime));
+
+                // Collectible updates and collisions
+                currentLevel.collectibles.forEach(c => {
+                    c.update(deltaTime);
+                    if (!c.collected && c.checkCollision(player)) {
+                        c.collected = true;
+                        if (c.type === 'coin') {
+                            player.coins++;
+                            const emitter = new ParticleEmitter(c.x, c.y, 10, '#ffcc00');
+                            particles.push(emitter);
+                        } else if (c.type === 'star') {
+                            player.stars++;
+                            const emitter = new ParticleEmitter(c.x, c.y, 15, '#ffff00');
+                            particles.push(emitter);
+                        }
+                    }
+                });
+
+                // Particle updates
+                particles.forEach(emitter => emitter.update(deltaTime));
+                particles = particles.filter(emitter => emitter.particles.length > 0);
+
+                // Level complete check
+                if (player.stars >= 4) {
+                    gameState.currentScene = 'victory';
+                    gameState.victoryTimer = 0;
+                }
+
+                // Game over check
+                if (player.health <= 0) {
+                    gameState.currentScene = 'gameOver';
+                }
+            } else if (gameState.currentScene === 'victory') {
+                gameState.victoryTimer += deltaTime;
+                
+                // Add particles for the ending
+                if (gameState.victoryTimer > 6 && gameState.victoryTimer < 8) {
+                    const angle = Math.random() * Math.PI * 2;
+                    const distance = 150 + Math.random() * 100;
+                    const x = GAME_WIDTH / 2 + Math.cos(angle) * distance;
+                    const y = GAME_HEIGHT - 100 + Math.sin(angle) * distance;
+                    const emitter = new ParticleEmitter(x, y, 1, ['#ff69b4', '#ffaa00'][Math.floor(Math.random() * 2)]);
+                    particles.push(emitter);
+                }
+
+                particles.forEach(emitter => emitter.update(deltaTime));
+                particles = particles.filter(emitter => emitter.particles.length > 0);
+            } else if (gameState.currentScene === 'ending') {
+                gameState.victoryTimer += deltaTime;
+                
+                // Add glowing particles around names
+                if (Math.random() < 0.3) {
+                    const x = GAME_WIDTH / 2 + (Math.random() - 0.5) * 400;
+                    const y = GAME_HEIGHT - 100 + (Math.random() - 0.5) * 100;
+                    const colors = ['#ff69b4', '#ffaa00', '#ffff00', '#ff1493'];
+                    const emitter = new ParticleEmitter(x, y, 2, colors[Math.floor(Math.random() * colors.length)]);
+                    particles.push(emitter);
+                }
+
+                particles.forEach(emitter => emitter.update(deltaTime));
+                particles = particles.filter(emitter => emitter.particles.length > 0);
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+
+            if (gameState.currentScene === 'splash') {
+                drawSplashScreen();
+            } else if (gameState.currentScene === 'mainMenu') {
+                drawMainMenu();
+            } else if (gameState.currentScene === 'game') {
+                drawBackground();
+
+                // Draw game objects
+                currentLevel.platforms.forEach(p => p.draw());
+                currentLevel.enemies.forEach(e => e.draw());
+                currentLevel.collectibles.forEach(c => {
+                    if (!c.collected) c.draw();
+                });
+
+                // Draw particles
+                particles.forEach(emitter => emitter.draw());
+
+                // Draw player
+                player.draw();
+
+                // Draw UI
+                drawUI();
+
+                if (gameState.isPaused) {
+                    drawPauseMenu();
+                }
+            } else if (gameState.currentScene === 'gameOver') {
+                drawGameOverScreen();
+            } else if (gameState.currentScene === 'victory') {
+                drawVictoryScreen();
+            } else if (gameState.currentScene === 'ending') {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.95)';
+                ctx.fillRect(0, 0, GAME_WIDTH, GAME_HEIGHT);
+                drawEndingScene();
+            }
+        }
+
+        function gameLoop() {
+            const currentTime = Date.now();
+            const deltaTime = Math.min((currentTime - lastFrameTime) / 1000, 0.016);
+            lastFrameTime = currentTime;
+
+            update(deltaTime);
+            draw();
+
+            requestAnimationFrame(gameLoop);
+        }
+
+        // ==================== INITIALIZATION ====================
+        initLevel(0);
+        gameState.currentScene = 'splash';
+        gameState.timeElapsed = 0;
+        gameLoop();
+
+        // Prevent context menu on right click
+        canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+    </script>
 </body>
 </html>
