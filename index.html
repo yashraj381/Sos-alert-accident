@@ -469,6 +469,7 @@
                 Pagliiii ❤️<br>
                 Sab pieces ko sahi jagah lagaiye.
             </p>
+            <img id="preview" src="https://via.placeholder.com/150" alt="Puzzle Preview">
             <div id="board"></div>
             <button onclick="shufflePuzzle()">Shuffle ❤️</button>
         </div>
@@ -489,6 +490,10 @@
     </div>
 
     <script>
+        // ========== PUZZLE IMAGE URL ==========
+        // Replace this with your actual image URL
+        const puzzleImageUrl = "https://via.placeholder.com/300";
+
         // ========== PAGE TRANSITIONS ==========
         document.getElementById("letter").onclick = function() {
             this.style.display = "none";
@@ -573,12 +578,15 @@
             pieces = [];
             board.innerHTML = "";
 
+            // Set preview image
+            document.getElementById("preview").src = puzzleImageUrl;
+
             // Create puzzle pieces
             for (let y = 0; y < 3; y++) {
                 for (let x = 0; x < 3; x++) {
                     let div = document.createElement("div");
                     div.className = "tile";
-                    div.style.backgroundImage = "linear-gradient(135deg, #FFB6D9, #FF69B4)";
+                    div.style.backgroundImage = `url('${puzzleImageUrl}')`;
                     div.style.backgroundPosition = (-x * 100) + "px " + (-y * 100) + "px";
                     div.dataset.correctIndex = y * 3 + x;
                     div.dataset.index = y * 3 + x;
@@ -591,6 +599,9 @@
                     pieces.push(div);
                 }
             }
+
+            // Shuffle puzzle on start
+            shufflePuzzle();
         }
 
         function shufflePuzzle() {
@@ -599,6 +610,14 @@
             shuffled.forEach((p, idx) => {
                 p.dataset.index = idx;
                 board.appendChild(p);
+            });
+
+            // Re-attach click handlers
+            let allTiles = document.querySelectorAll(".tile");
+            allTiles.forEach(t => {
+                t.onclick = function() {
+                    selectPiece(this);
+                };
             });
         }
 
